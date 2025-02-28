@@ -49,6 +49,7 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
     balance = int(total_assets_available)  # obtain supply rates of pools - aave pool and sturdy silo
     # rates are determined by making on chain calls to smart contracts
     for pool in pools.values():
+        bt.logging.debug(f"PoolFactory output: {pool.contract_address}")
         match pool.pool_type:
             case POOL_TYPES.DAI_SAVINGS:
                 apy = pool.supply_rate()
