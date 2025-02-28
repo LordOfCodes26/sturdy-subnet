@@ -29,7 +29,6 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
             ),  # TODO: is there a cleaner way to do this?
             contract_address=pool.contract_address,
         )
-    bt.logging.debug(f"PoolFactory output: {pools}")
     total_assets_available = int(THRESHOLD * synapse.assets_and_pools["total_assets"])
     pools = cast(dict, synapse.assets_and_pools["pools"])
 
@@ -39,6 +38,7 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
     # sync pool parameters by calling smart contracts on chain
     for pool in pools.values():
         pool.sync(self.w3)
+    bt.logging.debug(f"PoolFactory output: {pools}")
 
     # check the amounts that have been borrowed from the pools - and account for them
     minimums = {}
