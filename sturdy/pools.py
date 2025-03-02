@@ -752,6 +752,8 @@ class VariableInterestSturdySiloStrategy(ChainBasedPoolModel):
     @ttl_cache(maxsize=256, ttl=60)
     def supply_rate(self, amount: int) -> int:
         # amount scaled down to the asset's decimals from 18 decimals (wei)
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
+
         delta = amount - self._user_deposits
 
         """Returns supply rate given new deposit amount"""

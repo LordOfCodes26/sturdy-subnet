@@ -29,9 +29,11 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
             ),  # TODO: is there a cleaner way to do this?
             contract_address=pool.contract_address,
         )
+    bt.logging.debug(f"pools: {pools}")
     total_assets_available = int(THRESHOLD * synapse.assets_and_pools["total_assets"])
+    bt.logging.debug(f"total_assets_available: {total_assets_available}")
     pools = cast(dict, synapse.assets_and_pools["pools"])
-
+    bt.logging.debug(f"casted pools: {pools}")
     supply_rate_sum = 0
     supply_rates = {}
 
@@ -44,12 +46,14 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
     minimums = {}
     for pool_uid, pool in pools.items():
         minimums[pool_uid] = get_minimum_allocation(pool)
-
+    bt.logging.debug(f"minimums: {minimums}")
     total_assets_available -= sum(minimums.values())
+    bt.logging.debug(f"total_assets_available_minus_miniums: {total_assets_available}")
     balance = int(total_assets_available)  # obtain supply rates of pools - aave pool and sturdy silo
     # rates are determined by making on chain calls to smart contracts
+    bt.logging.debug(f"balance: {balance}")
     for pool in pools.values():
-        bt.logging.debug(f"PoolFactory output: {pool.contract_address}")
+        bt.logging.debug(f"pool_contract_address: {pool.contract_address}")
         match pool.pool_type:
             case POOL_TYPES.DAI_SAVINGS:
                 apy = pool.supply_rate()
