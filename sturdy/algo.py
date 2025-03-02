@@ -19,7 +19,7 @@ THRESHOLD = 0.99  # used to avoid over-allocations
 def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
     bt.logging.debug(f"received request type: {synapse.request_type}")
     pools = cast(dict, synapse.assets_and_pools["pools"])
-
+    bt.logging.debug(f"before_created_pools: {pools}")
     for uid, pool in pools.items():
         pools[uid] = PoolFactory.create_pool(
             pool_type=pool.pool_type,
@@ -29,7 +29,7 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
             ),  # TODO: is there a cleaner way to do this?
             contract_address=pool.contract_address,
         )
-    bt.logging.debug(f"pools: {pools}")
+    bt.logging.debug(f"created_pools: {pools}")
     total_assets_available = int(THRESHOLD * synapse.assets_and_pools["total_assets"])
     bt.logging.debug(f"total_assets_available: {total_assets_available}")
     pools = cast(dict, synapse.assets_and_pools["pools"])

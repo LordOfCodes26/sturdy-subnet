@@ -396,6 +396,7 @@ class AaveV3DefaultInterestRateV2Pool(ChainBasedPoolModel):
     # last 256 unique calls to this will be cached for the next 60 seconds
     @ttl_cache(maxsize=256, ttl=60)
     def supply_rate(self, amount: int) -> int:
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         """Returns supply rate given new deposit amount"""
         try:
             already_deposited = self._user_deposits
@@ -607,6 +608,7 @@ class AaveV3RateTargetBaseInterestRatePool(ChainBasedPoolModel):
     # last 256 unique calls to this will be cached for the next 60 seconds
     @ttl_cache(maxsize=256, ttl=60)
     def supply_rate(self, amount: int) -> int:
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         """Returns supply rate given new deposit amount"""
         try:
             already_deposited = self._user_deposits
@@ -868,6 +870,7 @@ class CompoundV3Pool(ChainBasedPoolModel):
     def supply_rate(self, amount: int) -> int:
         # amount scaled down to the asset's decimals from 18 decimals (wei)
         # get pool supply rate (base token)
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         already_in_pool = self._user_deposits
 
         delta = amount - already_in_pool
@@ -942,6 +945,7 @@ class DaiSavingsRate(ChainBasedPoolModel):
     # last 256 unique calls to this will be cached for the next 60 seconds
     @ttl_cache(maxsize=256, ttl=60)
     def supply_rate(self) -> int:
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         RAY = 1e27
         dsr = retry_with_backoff(self._pot_contract.functions.dsr().call)
         seconds_per_year = 31536000
@@ -1068,6 +1072,7 @@ class MorphoVault(ChainBasedPoolModel):
     # last 256 unique calls to this will be cached for the next 60 seconds
     @ttl_cache(maxsize=256, ttl=60)
     def supply_rate(self, amount: int) -> int:
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         supply_queue_length = retry_with_backoff(self._vault_contract.functions.supplyQueueLength().call)
         market_ids = [
             retry_with_backoff(self._vault_contract.functions.supplyQueue(idx).call) for idx in range(supply_queue_length)
@@ -1169,6 +1174,7 @@ class YearnV3Vault(ChainBasedPoolModel):
         self._yield_index = retry_with_backoff(self._vault_contract.functions.pricePerShare().call)
 
     def supply_rate(self, amount: int) -> int:
+        bt.logging.debug(f"pool_in_poolfactory: {self}")
         delta = amount - self._user_deposits
         return retry_with_backoff(self._apr_oracle.functions.getExpectedApr(self.contract_address, delta).call)
 
