@@ -58,10 +58,12 @@ def naive_algorithm(self: BaseMinerNeuron, synapse: AllocateAssets) -> dict:
             case POOL_TYPES.DAI_SAVINGS:
                 apy = pool.supply_rate()
                 supply_rates[pool.contract_address] = apy
+                bt.logging.debug(f"pool_apy: {apy}") 
                 supply_rate_sum += apy
             case _:
                 apy = pool.supply_rate(balance // len(pools))
                 supply_rates[pool.contract_address] = apy
+                bt.logging.debug(f"pool_apy: {apy}") 
                 supply_rate_sum += apy
 
     return {
